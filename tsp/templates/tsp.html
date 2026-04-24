@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>TSP</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<h2>TSP Solver</h2>
+
+<textarea id="matrix" rows="6" cols="40">
+0 10 15 20
+10 0 35 25
+15 35 0 30
+20 25 30 0
+</textarea><br>
+
+<button onclick="solve()">Solve</button>
+
+<pre id="out"></pre>
+
+<script>
+function solve(){
+    let rows = document.getElementById("matrix").value.trim().split("\n");
+    let matrix = rows.map(r=>r.split(" ").map(Number));
+
+    fetch("/solve",{
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({matrix})
+    })
+    .then(r=>r.json())
+    .then(d=>{
+        document.getElementById("out").innerText =
+`Brute Force:
+Path: ${d.bf_path}
+Cost: ${d.bf_cost}
+Time: ${d.bf_time}
+
+Heuristic:
+Path: ${d.nn_path}
+Time: ${d.nn_time}`;
+    });
+}
+</script>
+
+</body>
+</html>
